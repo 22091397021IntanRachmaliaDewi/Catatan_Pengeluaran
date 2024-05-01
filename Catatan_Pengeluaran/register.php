@@ -65,7 +65,7 @@ if (isset($_REQUEST['firstname'])) {
 
     .signup-form {
       width: 450px;
-      margin: 0 auto;
+      margin: 90px auto;
       padding: 30px 0;
       font-size: 15px;
     }

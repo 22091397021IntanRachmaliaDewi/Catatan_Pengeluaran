@@ -98,11 +98,12 @@ if (isset($_POST['filter_tgl'])) {
                 <hr>
                 <div class="row justify-content-center mt-4">
                     <div class="col-md-8 text-center">
-                        <form method="post" class="form-inline">
-                            <input type="date" name="tgl_mulai" class="form-control">
-                            <input type="date" name="tgl_selesai" class="form-control ml-3">
-                            <button type="submit" name="filter_tgl" class="btn btn-info ml-3">Filter</button>
-                        </form>
+                    <form method="post" class="form-inline">
+    <input type="date" name="tgl_mulai" class="form-control" value="<?php echo isset($_POST['tgl_mulai']) ? $_POST['tgl_mulai'] : ''; ?>">
+    <input type="date" name="tgl_selesai" class="form-control ml-3" value="<?php echo isset($_POST['tgl_selesai']) ? $_POST['tgl_selesai'] : ''; ?>">
+    <button type="submit" name="filter_tgl" class="btn btn-info ml-3">Filter</button>
+</form>
+
                     </div>
                 </div>
                 <div class="row justify-content-center mt-4">

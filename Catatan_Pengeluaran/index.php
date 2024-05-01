@@ -1,233 +1,242 @@
 <?php
-  include("session.php");
-  $exp_category_dc = mysqli_query($con, "SELECT kategori FROM expenses WHERE user_id = '$userid' GROUP BY kategori");
-  $exp_amt_dc = mysqli_query($con, "SELECT SUM(pengeluaran) FROM expenses WHERE user_id = '$userid' GROUP BY kategori");
+include("session.php");
 
-  $exp_date_line = mysqli_query($con, "SELECT tanggal FROM expenses WHERE user_id = '$userid' GROUP BY tanggal");
-  $exp_amt_line = mysqli_query($con, "SELECT SUM(pengeluaran) FROM expenses WHERE user_id = '$userid' GROUP BY tanggal");
+// Ambil data kategori pengeluaran dan total pengeluaran per kategori
+$exp_category_dc = mysqli_query($con, "SELECT kategori, SUM(REPLACE(REPLACE(REPLACE(pengeluaran, 'Rp', ''), '.', ''), ',', '')) as total FROM expenses WHERE user_id = '$userid' GROUP BY kategori");
+
+// Ambil data tanggal dan total pengeluaran per tanggal
+$exp_date_line = mysqli_query($con, "SELECT tanggal, SUM(REPLACE(REPLACE(REPLACE(pengeluaran, 'Rp', ''), '.', ''), ',', '')) as total FROM expenses WHERE user_id = '$userid' GROUP BY tanggal");
+
+// Simpan hasil query dalam array
+$category_labels = array();
+$category_totals = array();
+
+while ($row = mysqli_fetch_assoc($exp_category_dc)) {
+    $category_labels[] = $row['kategori'];
+    $category_totals[] = (float) $row['total'];
+}
+
+// Simpan hasil query dalam array
+$date_labels = array();
+$date_totals = array();
+
+while ($row = mysqli_fetch_assoc($exp_date_line)) {
+    $date_labels[] = $row['tanggal'];
+    $date_totals[] = (float) $row['total'];
+}
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
 
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <meta name="description" content="">
-  <meta name="author" content="">
+    <title>Catatan Pengeluaran - Dashboard</title>
 
-  <title>Catatan Pengeluaran - Dashboard</title>
+    <!-- Bootstrap core CSS -->
+    <link href="css/bootstrap.min.css" rel="stylesheet">
 
-  <!-- Bootstrap core CSS -->
-  <link href="css/bootstrap.min.css" rel="stylesheet">
+    <!-- Custom styles for this template -->
+    <link href="css/style.css" rel="stylesheet">
 
-  <!-- Custom styles for this template -->
-  <link href="css/style.css" rel="stylesheet">
+    <!-- Feather JS for Icons -->
+    <script src="js/feather.min.js"></script>
+    <style>
+        .card a {
+            color: #000;
+            font-weight: 500;
+        }
 
-  <!-- Feather JS for Icons -->
-  <script src="js/feather.min.js"></script>
-  <style>
-    .card a {
-      color: #000;
-      font-weight: 500;
-    }
-
-    .card a:hover {
-      color: #28a745;
-      text-decoration: dotted;
-    }
-  </style>
-
+        .card a:hover {
+            color: #28a745;
+            text-decoration: dotted;
+        }
+    </style>
 </head>
 
 <body>
-
-  <div class="d-flex" id="wrapper">
-
-    <!-- Sidebar -->
-    <div class="border-right" id="sidebar-wrapper">
-      <div class="user">
-        <img class="img img-fluid rounded-circle" src="<?php echo $userprofile ?>" width="120">
-        <h5><?php echo $username ?></h5>
-        <p><?php echo $useremail ?></p>
-      </div>
-      <div class="sidebar-heading">Pengelolaan</div>
-      <div class="list-group list-group-flush">
-        <a href="index.php" class="list-group-item list-group-item-action sidebar-active"><span data-feather="home"></span> Dashboard</a>
-        <a href="add_expense.php" class="list-group-item list-group-item-action "><span data-feather="plus-square"></span> Tambah Pengeluaran</a>
-        <a href="manage_expense.php" class="list-group-item list-group-item-action "><span data-feather="clipboard"></span> Laporan Pengeluaran</a>
-      </div>
-      <div class="sidebar-heading">Pengaturan </div>
-      <div class="list-group list-group-flush">
-        <a href="profile.php" class="list-group-item list-group-item-action "><span data-feather="user"></span> Profile</a>
-        <a href="logout.php" class="list-group-item list-group-item-action "><span data-feather="power"></span> Logout</a>
-      </div>
-    </div>
-    <!-- /#sidebar-wrapper -->
-
-    <!-- Page Content -->
-    <div id="page-content-wrapper">
-
-      <nav class="navbar navbar-expand-lg navbar-light  border-bottom">
-
-
-        <button class="toggler" type="button" id="menu-toggle" aria-expanded="false">
-          <span data-feather="menu"></span>
-        </button>
-
-        <div class="collapse navbar-collapse" id="navbarSupportedContent">
-          <ul class="navbar-nav ml-auto mt-2 mt-lg-0">
-            <li class="nav-item dropdown">
-              <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                <img class="img img-fluid rounded-circle" src="<?php echo $userprofile ?>" width="25">
-              </a>
-              <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
-                <a class="dropdown-item" href="profile.php">Profile Saya</a>
-                <div class="dropdown-divider"></div>
-                <a class="dropdown-item" href="logout.php">Logout</a>
-              </div>
-            </li>
-          </ul>
+    <div class="d-flex" id="wrapper">
+        <!-- Sidebar -->
+        <div class="border-right" id="sidebar-wrapper">
+            <div class="user">
+                <img class="img img-fluid rounded-circle" src="<?php echo $userprofile ?>" width="120">
+                <h5><?php echo $username ?></h5>
+                <p><?php echo $useremail ?></p>
+            </div>
+            <div class="sidebar-heading">Pengelolaan</div>
+            <div class="list-group list-group-flush">
+                <a href="index.php" class="list-group-item list-group-item-action sidebar-active"><span data-feather="home"></span> Dashboard</a>
+                <a href="add_expense.php" class="list-group-item list-group-item-action "><span data-feather="plus-square"></span> Tambah Pengeluaran</a>
+                <a href="manage_expense.php" class="list-group-item list-group-item-action "><span data-feather="clipboard"></span> Laporan Pengeluaran</a>
+            </div>
+            <div class="sidebar-heading">Pengaturan </div>
+            <div class="list-group list-group-flush">
+                <a href="profile.php" class="list-group-item list-group-item-action "><span data-feather="user"></span> Profile</a>
+                <a href="logout.php" class="list-group-item list-group-item-action "><span data-feather="power"></span> Logout</a>
+            </div>
         </div>
-      </nav>
+        <!-- /#sidebar-wrapper -->
 
-      <div class="container-fluid">
-        <h3 class="mt-4">Dashboard</h3>
-        <div class="row">
-          <div class="col-md">
-            <div class="card">
-              <div class="card-body">
-                <div class="row">
-                  <div class="col text-center">
-                    <a href="add_expense.php"><img src="icon/uang_tambah.png" width="57px" />
-                      <p>Tambah Pengeluaran</p>
-                    </a>
-                  </div>
-                  <div class="col text-center">
-                    <a href="manage_expense.php"><img src="icon/laporan.png" width="57px" />
-                      <p>Laporan Pengeluaran</p>
-                    </a>
-                  </div>
-                  <div class="col text-center">
-                    <a href="profile.php"><img src="icon/user2.png" width="57px" />
-                      <p>Profile</p>
-                    </a>
-                  </div>
+        <!-- Page Content -->
+        <div id="page-content-wrapper">
+            <nav class="navbar navbar-expand-lg navbar-light  border-bottom">
+                <button class="toggler" type="button" id="menu-toggle" aria-expanded="false">
+                    <span data-feather="menu"></span>
+                </button>
+
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <ul class="navbar-nav ml-auto mt-2 mt-lg-0">
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <img class="img img-fluid rounded-circle" src="<?php echo $userprofile ?>" width="25">
+                            </a>
+                            <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
+                                <a class="dropdown-item" href="profile.php">Profile Saya</a>
+                                <div class="dropdown-divider"></div>
+                                <a class="dropdown-item" href="logout.php">Logout</a>
+                            </div>
+                        </li>
+                    </ul>
                 </div>
-              </div>
+            </nav>
+            <div class="container-fluid">
+                <h3 class="mt-4">Dashboard</h3>
+                <div class="row">
+                    <div class="col-md">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col text-center">
+                                        <a href="add_expense.php"><img src="icon/uang_tambah.png" width="57px" />
+                                            <p>Tambah Pengeluaran</p>
+                                        </a>
+                                    </div>
+                                    <div class="col text-center">
+                                        <a href="manage_expense.php"><img src="icon/laporan.png" width="57px" />
+                                            <p>Laporan Pengeluaran</p>
+                                        </a>
+                                    </div>
+                                    <div class="col text-center">
+                                        <a href="profile.php"><img src="icon/user2.png" width="57px" />
+                                            <p>Profile</p>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <h3 class="mt-4">Laporan Pengeluaran</h3>
+                <div class="row">
+                    <div class="col-md">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5 class="card-title text-center">Pengeluaran Tahunan</h5>
+                            </div>
+                            <div class="card-body">
+                                <canvas id="expense_line" height="150"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5 class="card-title text-center">Kategori Pengeluaran</h5>
+                            </div>
+                            <div class="card-body">
+                                <canvas id="expense_category_pie" height="150"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
-          </div>
         </div>
-
-        <h3 class="mt-4">Laporan Pengeluaran</h3>
-        <div class="row">
-          <div class="col-md">
-            <div class="card">
-              <div class="card-header">
-                <h5 class="card-title text-center">Pengeluaran Tahunan</h5>
-              </div>
-              <div class="card-body">
-                <canvas id="expense_line" height="150"></canvas>
-              </div>
-            </div>
-          </div>
-          <div class="col-md">
-            <div class="card">
-              <div class="card-header">
-                <h5 class="card-title text-center">Kategori Pengeluaran</h5>
-              </div>
-              <div class="card-body">
-                <canvas id="expense_category_pie" height="150"></canvas>
-              </div>
-            </div>
-          </div>
-        </div>
-
-
-      </div>
     </div>
     <!-- /#page-content-wrapper -->
 
-  </div>
-  <!-- /#wrapper -->
+    <!-- Bootstrap core JavaScript -->
+    <script src="js/jquery.slim.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script src="js/Chart.min.js"></script>
+    <!-- Menu Toggle Script -->
+    <script>
+        $("#menu-toggle").click(function(e) {
+            e.preventDefault();
+            $("#wrapper").toggleClass("toggled");
+        });
+        feather.replace()
+    </script>
+    <script>
+        var ctx = document.getElementById('expense_category_pie').getContext('2d');
+        var myChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: <?php echo json_encode($category_labels); ?>,
+                datasets: [{
+                    label: 'Pengeluaran Berdasarkan Kategori',
+                    data: <?php echo json_encode($category_totals); ?>,
+                    backgroundColor: [
+                        '#6f42c1',
+                        '#dc3545',
+                        '#28a745',
+                        '#007bff',
+                        '#ffc107',
+                        '#20c997',
+                        '#17a2b8',
+                        '#fd7e14',
+                        '#e83e8c',
+                        '#6610f2'
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    yAxes: [{
+                        ticks: {
+                            beginAtZero: true,
+                            callback: function(value, index, values) {
+                                return 'Rp ' + value.toLocaleString();
+                            }
+                        }
+                    }]
+                }
+            }
+        });
 
-  <!-- Bootstrap core JavaScript -->
-  <script src="js/jquery.slim.min.js"></script>
-  <script src="js/bootstrap.min.js"></script>
-  <script src="js/Chart.min.js"></script>
-  <!-- Menu Toggle Script -->
-  <script>
-    $("#menu-toggle").click(function(e) {
-      e.preventDefault();
-      $("#wrapper").toggleClass("toggled");
-    });
-  </script>
-  <script>
-    feather.replace()
-  </script>
-  <script>
-    var ctx = document.getElementById('expense_category_pie').getContext('2d');
-    var myChart = new Chart(ctx, {
-      type: 'bar',
-      data: {
-        labels: [<?php while ($a = mysqli_fetch_array($exp_category_dc)) {
-                    echo '"' . $a['kategori'] . '",';
-                  } ?>],
-        datasets: [{
-          label: 'Pengeluaran Berdasarkan Kategori',
-          data: [<?php while ($b = mysqli_fetch_array($exp_amt_dc)) {
-                    echo '"' . $b['SUM(pengeluaran)'] . '",';
-                  } ?>],
-          backgroundColor: [
-            '#6f42c1',
-            '#dc3545',
-            '#28a745',
-            '#007bff',
-            '#ffc107',
-            '#20c997',
-            '#17a2b8',
-            '#fd7e14',
-            '#e83e8c',
-            '#6610f2'
-          ],
-          borderWidth: 1
-        }]
-      }
-    });
-
-    var line = document.getElementById('expense_line').getContext('2d');
-    var myChart = new Chart(line, {
-      type: 'line',
-      data: {
-        labels: [<?php while ($c = mysqli_fetch_array($exp_date_line)) {
-                    echo '"' . $c['tanggal'] . '",';
-                  } ?>],
-        datasets: [{
-          label: 'Pengeluaran per Bulan (Sepanjang Tahun)',
-          data: [<?php while ($d = mysqli_fetch_array($exp_amt_line)) {
-                    echo '"' . $d['SUM(pengeluaran)'] . '",';
-                  } ?>],
-          borderColor: [
-            '#adb5bd'
-          ],
-          backgroundColor: [
-            '#6f42c1',
-            '#dc3545',
-            '#28a745',
-            '#007bff',
-            '#ffc107',
-            '#20c997',
-            '#17a2b8',
-            '#fd7e14',
-            '#e83e8c',
-            '#6610f2'
-          ],
-          fill: false,
-          borderWidth: 2
-        }]
-      }
-    });
-  </script>
+        var line = document.getElementById('expense_line').getContext('2d');
+        var myLineChart = new Chart(line, {
+            type: 'line',
+            data: {
+                labels: <?php echo json_encode($date_labels); ?>,
+                datasets: [{
+                    label: 'Pengeluaran per Bulan (Sepanjang Tahun)',
+                    data: <?php echo json_encode($date_totals); ?>,
+                    borderColor: '#6f42c1',
+                    backgroundColor: '#6f42c1',
+                    fill: false,
+                    borderWidth: 2
+                }]
+            },
+            options: {
+                scales: {
+                    yAxes: [{
+                        ticks: {
+                            beginAtZero: true,
+                            callback: function(value, index, values) {
+                                return 'Rp ' + value.toLocaleString();
+                            }
+                        }
+                    }]
+                }
+            }
+        });
+    </script>
 </body>
 
 </html>

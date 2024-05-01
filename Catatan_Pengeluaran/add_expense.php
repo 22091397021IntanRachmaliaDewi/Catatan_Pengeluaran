@@ -14,18 +14,12 @@ $kategori = "Hiburan";
 // Penanganan saat formulir disubmit dengan method POST
 if (isset($_POST['add'])) {
     // Ambil nilai input dari formulir
-    $expenseamount = $_POST['expenseamount'];
+    $expenseamount = 'Rp ' . number_format($_POST['expenseamount']); // Format nilai sebagai Rupiah
     $tanggal = $_POST['tanggal'];
     $kategori = $_POST['kategori'];
 
-    // Membersihkan nilai pengeluaran dari karakter non-digit
-    $cleaned_amount = preg_replace('/[^\d]/', '', $expenseamount);
-
-    // Konversi nilai ke tipe integer (untuk nilai dalam satuan Rupiah)
-    $amount_numeric = (int) $cleaned_amount;
-
     // Query untuk menyimpan data pengeluaran ke database
-    $expenses = "INSERT INTO expenses (user_id, pengeluaran, tanggal, kategori) VALUES ('$userid', '$amount_numeric', '$tanggal', '$kategori')";
+    $expenses = "INSERT INTO expenses (user_id, pengeluaran, tanggal, kategori) VALUES ('$userid', '$expenseamount', '$tanggal', '$kategori')";
     $result = mysqli_query($con, $expenses) or die("Something Went Wrong!");
 
     // Redirect ke halaman tambah pengeluaran setelah operasi berhasil
@@ -35,15 +29,12 @@ if (isset($_POST['add'])) {
 // Penanganan saat formulir disubmit untuk update data
 if (isset($_POST['update'])) {
     $id = $_GET['edit']; // Ambil ID data yang akan diupdate
-    $expenseamount = $_POST['expenseamount'];
+    $expenseamount = 'Rp ' . number_format($_POST['expenseamount']); // Format nilai sebagai Rupiah
     $tanggal = $_POST['tanggal'];
     $kategori = $_POST['kategori'];
 
-    // Membersihkan nilai pengeluaran dari karakter non-digit
-    $amount_numeric = preg_replace("/[^0-9]/", "", $expenseamount);
-
     // Query untuk mengupdate data pengeluaran di database
-    $sql = "UPDATE expenses SET pengeluaran='$amount_numeric', tanggal='$tanggal', kategori='$kategori' WHERE user_id='$userid' AND pengeluaran_id='$id'";
+    $sql = "UPDATE expenses SET pengeluaran='$expenseamount', tanggal='$tanggal', kategori='$kategori' WHERE user_id='$userid' AND pengeluaran_id='$id'";
     if (mysqli_query($con, $sql)) {
         echo "Records were updated successfully.";
     } else {
@@ -53,7 +44,7 @@ if (isset($_POST['update'])) {
     header('location: manage_expense.php');
 }
 
-// Penanganan saat formulir disubmit untuk menghapus data
+// Penanganan saat formulir disubmit untuk delete data
 if (isset($_POST['delete'])) {
     $id = $_GET['delete']; // Ambil ID data yang akan dihapus
 
@@ -76,8 +67,8 @@ if (isset($_GET['edit'])) {
     $record = mysqli_query($con, "SELECT * FROM expenses WHERE user_id='$userid' AND pengeluaran_id=$id");
     if (mysqli_num_rows($record) == 1) {
         $n = mysqli_fetch_array($record);
-        // Format nilai pengeluaran sebagai Rupiah
-        $expenseamount = 'Rp ' . number_format($n['pengeluaran']);
+        // Hapus format Rupiah dari nilai pengeluaran
+        $expenseamount = str_replace(["Rp", ".", ","], "", $n['pengeluaran']);
         $tanggal = $n['tanggal'];
         $kategori = $n['kategori'];
     } else {
@@ -85,6 +76,7 @@ if (isset($_GET['edit'])) {
         echo ("WARNING: AUTHORIZATION ERROR: Trying to Access Unauthorized data");
     }
 }
+
 
 // Penanganan saat permintaan GET untuk menghapus data
 if (isset($_GET['delete'])) {
@@ -95,7 +87,7 @@ if (isset($_GET['delete'])) {
     if (mysqli_num_rows($record) == 1) {
         $n = mysqli_fetch_array($record);
         // Format nilai pengeluaran sebagai Rupiah
-        $expenseamount = 'Rp ' . number_format($n['pengeluaran']);
+        $expenseamount = $n['pengeluaran'];
         $tanggal = $n['tanggal'];
         $kategori = $n['kategori'];
     } else {
@@ -115,7 +107,7 @@ if (isset($_GET['delete'])) {
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>Catatan Pengeluaran - Dashboard</title>
+    <title>Catatan Pengeluaran - Tambah Pengeluaran</title>
 
     <!-- Bootstrap core CSS -->
     <link href="css/bootstrap.min.css" rel="stylesheet">
@@ -191,7 +183,7 @@ if (isset($_GET['delete'])) {
                             <div class="form-group row">
                                 <label for="expenseamount" class="col-sm-6 col-form-label"><b>Masukkan Jumlah</b></label>
                                 <div class="col-md-6">
-                                    <input type="number" class="form-control col-sm-12" value="<?php echo $expenseamount; ?>" id="expenseamount" name="expenseamount" required>
+                                    <input type="text" class="form-control col-sm-12" value="<?php echo $expenseamount; ?>" id="expenseamount" name="expenseamount" required>
                                 </div>
                             </div>
                             <div class="form-group row">
@@ -205,6 +197,7 @@ if (isset($_GET['delete'])) {
                                     <legend class="col-form-label col-sm-6 pt-0"><b>Kategori</b></legend>
                                     <div class="col-md">
 
+                                        <!-- Your radio buttons for categories -->
                                         <div class="form-check">
                                             <input class="form-check-input" type="radio" name="kategori" id="kategori4" value="Kesehatan" <?php echo ($kategori == 'Kesehatan') ? 'checked' : '' ?>>
                                             <label class="form-check-label" for="kategori4">
@@ -247,12 +240,14 @@ if (isset($_GET['delete'])) {
                                             <label class="form-check-label" for="kategori8">
                                                 Kosmetik
                                             </label>
-                                        </div>
+                                        </div>    
                                         <div class="form-check">
                                             <input class="form-check-input" type="radio" name="kategori" id="kategori5" value="Lainnya" <?php echo ($kategori == 'Lainnya') ? 'checked' : '' ?>>
                                             <label class="form-check-label" for="kategori5">
                                                 Lainnya
                                             </label>
+                                        
+                                        
                                         </div>
                                     </div>
                                 </div>
@@ -294,9 +289,6 @@ if (isset($_GET['delete'])) {
     </script>
     <script>
         feather.replace();
-    </script>
-    <script>
-
     </script>
 </body>
 </html>
