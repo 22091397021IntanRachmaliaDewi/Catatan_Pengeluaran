@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1:3306
--- Waktu pembuatan: 01 Bulan Mei 2024 pada 14.41
+-- Waktu pembuatan: 26 Apr 2024 pada 04.29
 -- Versi server: 10.4.32-MariaDB
 -- Versi PHP: 8.2.12
 
@@ -30,7 +30,7 @@ SET time_zone = "+00:00";
 CREATE TABLE `expenses` (
   `pengeluaran_id` int(20) NOT NULL,
   `user_id` varchar(15) NOT NULL,
-  `pengeluaran` varchar(255) DEFAULT NULL,
+  `pengeluaran` int(20) NOT NULL,
   `tanggal` varchar(15) NOT NULL,
   `kategori` varchar(50) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
@@ -40,18 +40,13 @@ CREATE TABLE `expenses` (
 --
 
 INSERT INTO `expenses` (`pengeluaran_id`, `user_id`, `pengeluaran`, `tanggal`, `kategori`) VALUES
-(91, '7', 'Rp 1,000,000', '2024-04-26', 'Kesehatan'),
-(94, '7', 'Rp 2,000', '2024-05-01', 'Makanan'),
-(97, '7', 'Rp 50,000', '2024-04-24', 'Lainnya'),
-(98, '7', 'Rp 100,000', '2024-05-01', 'Kesehatan'),
-(99, '7', 'Rp 60,000', '2024-04-30', 'Tagihan dan Isi Ulang'),
-(100, '7', 'Rp 65,000', '2024-05-01', 'Transportasi'),
-(101, '7', 'Rp 60,000', '2024-04-29', 'Tagihan dan Isi Ulang'),
-(102, '7', 'Rp 900,000', '2024-04-25', 'Makanan'),
-(103, '7', 'Rp 800,000', '2024-04-28', 'Tagihan dan Isi Ulang'),
-(104, '7', 'Rp 1,000,000', '2024-04-02', 'Transportasi'),
-(105, '7', 'Rp 500,000', '2024-04-11', 'Hiburan'),
-(106, '7', 'Rp 100,000', '2024-05-01', 'Makanan');
+(82, '7', 80000, '2024-04-24', 'Makanan'),
+(84, '7', 650000, '2024-04-24', 'Kosmetik'),
+(85, '7', 1000000, '2024-04-24', 'Tagihan dan Isi Ulang'),
+(86, '7', 250000, '2024-04-24', 'Makanan'),
+(87, '7', 500000, '2024-03-24', 'Hiburan'),
+(88, '7', 750000, '2024-02-24', 'Tagihan dan Isi Ulang'),
+(91, '7', 100000, '2024-04-26', 'Transportasi');
 
 -- --------------------------------------------------------
 
@@ -100,7 +95,7 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT untuk tabel `expenses`
 --
 ALTER TABLE `expenses`
-  MODIFY `pengeluaran_id` int(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=107;
+  MODIFY `pengeluaran_id` int(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=92;
 
 --
 -- AUTO_INCREMENT untuk tabel `users`

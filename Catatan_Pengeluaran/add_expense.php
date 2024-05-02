@@ -257,7 +257,7 @@ if (isset($_GET['delete'])) {
                                     <?php if ($update == true) : ?>
                                         <button class="btn btn-lg btn-block btn-warning" style="border-radius: 0%;" type="submit" name="update">Update</button>
                                     <?php elseif ($del == true) : ?>
-                                        <button class="btn btn-lg btn-block btn-danger" style="border-radius: 0%;" type="submit" name="delete">Delete</button>
+                                        <button class="btn btn-lg btn-block btn-danger" style="border-radius: 0%;" type="submit" name="delete">Hapus</button>
                                     <?php else : ?>
                                         <button type="submit" name="add" class="btn btn-lg btn-block btn-success" style="border-radius: 0%;">Tambah Pengeluaran</button>
                                     <?php endif ?>
