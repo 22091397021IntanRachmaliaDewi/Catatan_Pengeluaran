@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1:3306
--- Waktu pembuatan: 26 Apr 2024 pada 04.29
+-- Waktu pembuatan: 03 Bulan Mei 2024 pada 05.11
 -- Versi server: 10.4.32-MariaDB
 -- Versi PHP: 8.2.12
 
@@ -30,7 +30,7 @@ SET time_zone = "+00:00";
 CREATE TABLE `expenses` (
   `pengeluaran_id` int(20) NOT NULL,
   `user_id` varchar(15) NOT NULL,
-  `pengeluaran` int(20) NOT NULL,
+  `pengeluaran` varchar(255) DEFAULT NULL,
   `tanggal` varchar(15) NOT NULL,
   `kategori` varchar(50) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
@@ -40,13 +40,11 @@ CREATE TABLE `expenses` (
 --
 
 INSERT INTO `expenses` (`pengeluaran_id`, `user_id`, `pengeluaran`, `tanggal`, `kategori`) VALUES
-(82, '7', 80000, '2024-04-24', 'Makanan'),
-(84, '7', 650000, '2024-04-24', 'Kosmetik'),
-(85, '7', 1000000, '2024-04-24', 'Tagihan dan Isi Ulang'),
-(86, '7', 250000, '2024-04-24', 'Makanan'),
-(87, '7', 500000, '2024-03-24', 'Hiburan'),
-(88, '7', 750000, '2024-02-24', 'Tagihan dan Isi Ulang'),
-(91, '7', 100000, '2024-04-26', 'Transportasi');
+(101, '7', 'Rp 60,000', '2024-04-29', 'Tagihan dan Isi Ulang'),
+(104, '7', 'Rp 1,000,000', '2024-04-02', 'Transportasi'),
+(105, '7', 'Rp 500,000', '2024-04-11', 'Hiburan'),
+(106, '7', 'Rp 100,000', '2024-05-01', 'Makanan'),
+(107, '7', 'Rp 1,000,000', '2024-05-03', 'Tagihan dan Isi Ulang');
 
 -- --------------------------------------------------------
 
@@ -69,7 +67,8 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`user_id`, `firstname`, `lastname`, `email`, `profile_path`, `password`, `trn_date`) VALUES
-(7, 'intan', 'rd', 'intanrd@gmail.com', 'user.png', '46a7357b0b816cb9dd56d70d2a385cfd', '2024-04-24 13:43:22');
+(7, 'intan', 'rd', 'intanrd@gmail.com', 'user.png', '46a7357b0b816cb9dd56d70d2a385cfd', '2024-04-24 13:43:22'),
+(8, 'yuni', 'ke', 'yunike@gmail.com', 'default_profile.png', '6b9d6ba55e4f27b1eb5ab5ca05d160a4', '2024-05-03 04:59:35');
 
 --
 -- Indexes for dumped tables
@@ -95,13 +94,13 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT untuk tabel `expenses`
 --
 ALTER TABLE `expenses`
-  MODIFY `pengeluaran_id` int(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=92;
+  MODIFY `pengeluaran_id` int(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=108;
 
 --
 -- AUTO_INCREMENT untuk tabel `users`
 --
 ALTER TABLE `users`
-  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
